@@ -1,0 +1,19 @@
+!!!
+html
+  include common/header
+
+  body
+    div.navbar.navbar-fixed-top
+      div.navbar-inner
+        div.container
+          a(data-toggle='collapse', data-target='.nav-collapse').btn.btn-navbar
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          button(data-bind='click: createNewNote') Create
+
+    block content
+
+    include common/footer
+
+    include common/scripts
