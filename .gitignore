@@ -1,0 +1,8 @@
+*.swp
+.[Dd][Ss]_[Ss]tore
+node_modules
+bin
+.idea
+.project
+.settings
+
