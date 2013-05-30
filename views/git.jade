@@ -1,0 +1,16 @@
+extends common/layout
+block content
+
+  .ui-widget-content.gitform
+    input(id="bundleid",       placeholder="project id", data-bind="value: bundleid")
+    br
+    input(id="path2remotegit", placeholder="path to  remote repository", data-bind="value: path2remotegit")
+    br
+    input(id="login2remotegit", placeholder="user login to  remote repository", data-bind="value: login2remotegit")
+    br
+    input(id="password2remotegit", placeholder="user password to  remote repository", data-bind="value: password2remotegit")
+    br
+    button(id="loadbutton", data-bind="click: loadAndCommit")
+     | Load and commit
+    br
+    .ui-widget-content.alert.alert-block(id='logview') 

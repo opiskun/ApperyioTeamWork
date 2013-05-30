@@ -1,11 +1,12 @@
-extends layout
+extends common/layout
 block content
 
-  <!-- note widget template-->
-  div(data-bind='foreach: {data:notes, updateTableEachTimeItChanges: notes, afterAdd: __afterAdd, afterRender: __afterRender }')
-    .stickynotes.ui-widget-content.alert.alert-block(data-bind = "attr: {'id': id}" )
-      p(data-bind='text: id') Note 
-      input(id="notename",type="text", palceholder="Note Name", data-bind="value: title, valueUpdate: 'afterkeydown'")
-      textarea(id="notebody", data-bind="value: body,  valueUpdate: 'afterkeydown'") 
-      button.deletenote(data-bind='click: $parent.deleteNote')  Delete
-  <!-- note widget template-->
+  .navbar
+    .navbar-inner
+      ul.nav
+        ui
+          a(href="/note")
+           | Collaboration demo 
+        ui
+          a(href="/git")
+           | Git demo
