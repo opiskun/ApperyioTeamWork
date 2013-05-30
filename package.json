@@ -9,5 +9,9 @@
     "express": "3.2.4",
     "jade": "*", 
     "socket.io":"*"
+  },
+  "engines": {
+    "node": "0.8.x",
+    "npm": "1.x"
   }
 }
