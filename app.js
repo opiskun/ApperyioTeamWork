@@ -5,6 +5,7 @@
  * http://nodetips.com/post/24557680994/deploying-a-node-js-app-to-heroku
  */
 
+
 var express = require('express')
   , http = require('http')
   , https = require('https')
@@ -36,6 +37,8 @@ if ('development' == app.get('env')) {
 }
 
 // HTTP HTTPS
+// read this 
+// http://elegantcode.com/2012/01/20/taking-toddler-steps-with-node-js-express-routing/
 
 app.get('/', 	 routes.index);
 app.get('/note', note.note);
@@ -74,23 +77,41 @@ io.sockets.on('connection', function(socket) {
 	// git integration
 	socket.on('loadAndcommit', function(data){
 		console.log(' load and commit ' + JSON.stringify(data));
-		downloadProjectBundle(data.bundleid, function(){
-			socket.emit("onGitReply", {message:"file loaded."});
-		});
+		downloadProjectBundle(data.bundleid, 
+							 function(status) {
+									socket.emit("onGitReply", {message:"file loaded."});
+							 });
 	});
 });
 
+//http://www.hacksparrow.com/using-node-js-to-download-files.html
 var WORKING_DIR = "./working_folder";
 
 function  downloadFile( fromURL, toFile,  callback){
     var file = fs.createWriteStream(toFile);
-	https.get(bundleurl, function(res) {
+    	
+	https.get(fromURL, function(res) {
 			console.log("statusCode: ", res.statusCode);
   			console.log("headers: ", res.headers);
   			var  requestRedirected = false;
-  			if (res.statusCode == 301) {
-  			 requestRedirected = true;
-  			 downloadFile(res.headers.location, toFile,  callback)
+  			
+  			if ( res.statusCode == 404) {
+  				callback(res.statusCode);
+  			} else {
+	  			if (res.statusCode == 301) {
+	  			 requestRedirected = true;
+	  			 var  new_url  = "https://appery.io"+res.headers.location;
+	  			 var options = {
+		    			host: url.parse(new_url).host,
+		    			port: 443,
+		    			path: url.parse(new_url).pathname,
+		    			headers: {
+		    				'Host': url.parse(new_url).host, 
+		    				'Cookie': res.headers['set-cookie']
+		    			}
+					};
+	  			 	downloadFile(options, toFile,  callback);
+	  			}  
   			}
   			
     		res.on('data', function(data) {
@@ -99,11 +120,11 @@ function  downloadFile( fromURL, toFile,  callback){
             		console.log('error in download');
             		console.log(data);
         		}).on('end', function() {
-        		    console.log('end request for ' + bundleurl);
+        		    console.log('end request for ' + fromURL);
             		file.end();
-            		if (done != undefined && !requestRedirected ) {
+            		if (callback != undefined && !requestRedirected ) {
             		        console.log('check download folder');
-							done();
+							callback(res.statusCode);
 					 }
         		});
     		});
@@ -113,7 +134,5 @@ function  downloadFile( fromURL, toFile,  callback){
 function  downloadProjectBundle(bundleId, done){
 	var bundleurl = "https://appery.io/app/project/"+bundleId+"/export/web";
 	var tofile = WORKING_DIR + path.sep + bundleId+".zip";
-	downloadFile(bundleurl,tofile, function(){
-			socket.emit('onGitReply', {message:"file  loaded...."});
-	})
+	downloadFile(bundleurl,tofile, done)
 }
