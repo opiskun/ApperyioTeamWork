@@ -82,25 +82,16 @@ io.sockets.on('connection', function(socket) {
 
 var WORKING_DIR = "./working_folder";
 
-function  downloadProjectBundle(bundleId, done){
-	var bundleurl = "https://appery.io/app/project/"+bundleId+"/export/web";
-	// call next
-
-	var options = {
-    	host: url.parse(bundleurl).host,
-    	port: 443,
-    	path: url.parse(bundleurl).pathname
-	};
-
-	var file = fs.createWriteStream(WORKING_DIR + path.sep + bundleId+".zip");
-	console.log(bundleurl);
-    console.log(JSON.stringify(options));
-    console.log(WORKING_DIR + path.sep + bundleId+".zip");
-    
+function  downloadFile( fromURL, toFile,  callback){
+    var file = fs.createWriteStream(toFile);
 	https.get(bundleurl, function(res) {
-			
 			console.log("statusCode: ", res.statusCode);
   			console.log("headers: ", res.headers);
+  			var  requestRedirected = false;
+  			if (res.statusCode == 301) {
+  			 requestRedirected = true;
+  			 downloadFile(res.headers.location, toFile,  callback)
+  			}
   			
     		res.on('data', function(data) {
             		file.write(data);
@@ -108,11 +99,21 @@ function  downloadProjectBundle(bundleId, done){
             		console.log('error in download');
             		console.log(data);
         		}).on('end', function() {
+        		    console.log('end request for ' + bundleurl);
             		file.end();
-            		console.log('check download folder');
-            		if (done != undefined) {
+            		if (done != undefined && !requestRedirected ) {
+            		        console.log('check download folder');
 							done();
 					 }
         		});
     		});
+
+}
+
+function  downloadProjectBundle(bundleId, done){
+	var bundleurl = "https://appery.io/app/project/"+bundleId+"/export/web";
+	var tofile = WORKING_DIR + path.sep + bundleId+".zip";
+	downloadFile(bundleurl,tofile, function(){
+			socket.emit('onGitReply', {message:"file  loaded...."});
+	})
 }
