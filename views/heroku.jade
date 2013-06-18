@@ -1,0 +1,14 @@
+extends common/layout
+block content
+
+  .ui-widget-content.gitform
+    p Deploy public Appery.io project to Heroku.
+    br
+    input(id="bundleid",       placeholder="project id", data-bind="value: bundleid")
+    br
+    input(id="path2remotegit", placeholder="path to  remote repository", data-bind="value: remoteapp")
+    br
+    button(id="loadbutton", data-bind="click: herokuDeploy")
+     | Deploy to Heroku
+    br
+    .ui-widget-content.alert.alert-block(id='logview') 

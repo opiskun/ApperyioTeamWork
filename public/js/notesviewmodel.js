@@ -52,7 +52,6 @@ function NotesViewModel(socket){
     }
     
     this.deleteNote = function(data){
-    	console.log("delete note is not implemented");
     	self.__removeNoteFromList(data)
     	socket.emit('deleteNote', data);
     }
@@ -61,6 +60,17 @@ function NotesViewModel(socket){
     	self.notes.remove(function(item){ return item.id == data.id});
     }
     
+    this.loadAllNotes = function(data){
+   		  socket.emit('readAllNotes');
+     }
+    
+    socket.on('onReadAllNotes', function(data) {     
+     	for(prop in  data) {
+     	      self.createNote(data[prop]);
+     		//console.log(data[prop]);
+     		//self.notes.push(prop);
+     	}
+	});
     
     // model helpers
 
@@ -99,7 +109,7 @@ function NotesViewModel(socket){
         //console.log(arguments);
         var elt = $(element);
         
-        $(elt).offset({ top: 50, left: 200 });
+        $(elt).offset({ top: 60, left: 280 });
        console.log($(elt).attr('style'));
                 
         elt.draggable({

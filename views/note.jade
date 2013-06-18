@@ -3,6 +3,8 @@ block content
 
   .stickynotes.ui-widget-content.alert.alert-block(align='center')
     button(data-bind='click: createNewNote') Create New Note
+    p You can create, update or move notes. All changes will synchronized  with other clients. 
+    p No conflict resolution implemented :) 
 
   <!-- note widget template-->
   div(data-bind='foreach: {data:notes, updateTableEachTimeItChanges: notes, afterAdd: __afterAdd, afterRender: __afterRender }')

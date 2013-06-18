@@ -4,5 +4,5 @@
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Apperio PoC',  brand:"Appery.io",id: 'home' });
+  res.render('index', { title: 'Apperio TeamWork',  brand:"Appery.io Experimental",id: 'home' });
 };

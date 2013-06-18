@@ -9,7 +9,7 @@ function App(){
 		} else
 		if (location.pathname == '/git'){
 	 		this.git();
-		} 
+		}
 		console.log('app run');
 	}
 	
@@ -17,6 +17,7 @@ function App(){
 		self.socket = io.connect();
 		self.notesModel = new NotesViewModel(this.socket);
 		ko.applyBindings(this.notesModel);
+		self.notesModel.loadAllNotes();
 		console.log('notes view model');
 	}
 	
@@ -26,6 +27,8 @@ function App(){
 		ko.applyBindings(this.gitModel);
 		console.log('git view model');
 	}
+	
+	
 }
 
 
@@ -33,5 +36,4 @@ $(document).ready(function(){
 
 var app = new App();
 	app.run();
-	
 })
